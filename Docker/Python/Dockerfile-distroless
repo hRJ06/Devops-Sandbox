@@ -1,0 +1,19 @@
+# --STAGE 1--
+
+FROM python:3.9-slim AS builder
+WORKDIR /app
+COPY requirements.txt .
+
+# --STAGE 2--
+
+FROM builder AS dependencies
+RUN pip install -r requirements.txt --target=/app/deps
+
+# --STAGE 3--
+FROM gcr.io/distroless/python3-debian12
+WORKDIR /app
+COPY . .
+COPY --from=dependencies /app/deps /app/deps
+ENV PYTHONPATH="/app/deps"
+EXPOSE 80
+CMD ["run.py"]
