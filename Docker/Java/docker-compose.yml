@@ -1,0 +1,52 @@
+services:
+  mysql:
+    image: mysql:5.7
+    container_name: mysql
+    environment:
+      MYSQL_PASSWORD: admin
+      MYSQL_USER: admin
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: hindol_db
+    volumes:
+      - mysql_data_volume:/var/lib/mysql
+    networks:
+      - two-tier
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
+      retries: 5
+      start_period: 60s
+      timeout: 5s
+
+
+  flaskapp:
+    build:
+      context: .
+    container_name: flaskapp
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
+      MYSQL_DB: hindol_db
+    networks:
+      - two-tier
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mysql
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5000/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+    restart: always
+
+volumes:
+  mysql_data_volume:
+
+networks:
+  two-tier:
+
