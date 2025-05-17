@@ -50,17 +50,25 @@ resource "aws_security_group" "ec2_allow_user_to_connect" {
 }
 
 resource "aws_instance" "ec2_instance" {
+    # count = 2 
+    for_each = tomap({
+      Hindol-EC2-t2-micro = "t2.micro"
+      Hindol-EC2-t2-medium = "t2.medium"
+    })
+    depends_on = [ aws_security_group.ec2_allow_user_to_connect, aws_key_pair.ec2_deployer ]
     ami = var.ec2-ami
-    instance_type = "t2.micro"
+    # instance_type = "t2.micro"
+    instance_type = each.value
     key_name = aws_key_pair.ec2_deployer.key_name
     security_groups = [aws_security_group.ec2_allow_user_to_connect.name]
     user_data = file("script.sh")
     root_block_device {
-      volume_size = 10
+      volume_size = var.env == "dev" ? var.ec2-root-storage-size : 20
       volume_type = var.ec2-root-storage-type
     }
     tags = {
-      Name = "Hindol-EC2"
+      # Name = "Hindol-EC2"
+      Name = each.key
     }
 }
 
