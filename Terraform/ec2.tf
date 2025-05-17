@@ -72,3 +72,14 @@ resource "aws_instance" "ec2_instance" {
     }
 }
 
+# SYNC GUI TO TERRAFORM
+resource "aws_instance" "new_ec2_instance" {
+  ami = "ami-0df368112825f8d8f" 
+  instance_type = "t2.micro"
+  key_name = aws_key_pair.ec2_deployer.key_name
+  security_groups = [aws_security_group.ec2_allow_user_to_connect.name]
+  tags = {
+    Name = "Hindol-EC2-GUI"
+  }
+}
+
