@@ -1,0 +1,50 @@
+@startuml infrastructure
+title INFRASTRUCTURE APPLICATION
+skinparam linetype ortho
+skinparam shadowing false
+skinparam backgroundColor #FFFFFF
+
+actor User
+
+package "Web Frontend" {
+  [Web UI]
+}
+
+package "Terraform Modules" {
+  [dev-infrastructure]
+  [prd-infrastructure]
+  [stg-infrastructure]
+}
+
+package "AWS Environment - dev" {
+  [S3 Bucket (dev)]
+  [EC2 Instance (1 x t2.micro)]
+}
+
+package "AWS Environment - prd" {
+  [S3 Bucket (prd)]
+  [EC2 Instance (t2.medium #1)]
+  [EC2 Instance (t2.medium #2)]
+}
+
+package "AWS Environment - stg" {
+  [S3 Bucket (stg)]
+  [EC2 Instance (1 x t2.small)]
+}
+
+User --> [Web UI]
+[Web UI] --> [dev-infrastructure]
+[Web UI] --> [prd-infrastructure]
+[Web UI] --> [stg-infrastructure]
+
+[dev-infrastructure] --> [S3 Bucket (dev)]
+[dev-infrastructure] --> [EC2 Instance (1 x t2.micro)]
+
+[prd-infrastructure] --> [S3 Bucket (prd)]
+[prd-infrastructure] --> [EC2 Instance (t2.medium #1)]
+[prd-infrastructure] --> [EC2 Instance (t2.medium #2)]
+
+[stg-infrastructure] --> [S3 Bucket (stg)]
+[stg-infrastructure] --> [EC2 Instance (1 x t2.small)]
+
+@enduml
