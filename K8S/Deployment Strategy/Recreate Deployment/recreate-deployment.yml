@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: top-course
+  namespace: recreate-ns
+  labels:
+    app: top-course
+spec:
+  replicas: 4
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: top-course
+  template:
+    metadata:
+      labels:
+        app: top-course
+    spec:
+      containers:
+        - image: hrj06/top-course-app
+          name: top-course
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+            requests:
+              cpu: "200m"
+              memory: "256Mi"
