@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: top-course
+  namespace: rolling-ns
+  labels:
+    app: top-course
+spec:
+  replicas: 4
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: top-course
+  template:
+    metadata:
+      labels:
+        app: top-course
+    spec:
+      containers:
+        - name: top-course
+          image: hrj06/top-course-app:v2
+          resources:
+            requests:
+              cpu: "200m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
