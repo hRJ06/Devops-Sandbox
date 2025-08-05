@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: top-course-green
+  name: top-course-green
+  namespace: blue-green-ns
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: top-course-green
+  template:
+    metadata:
+      labels:
+        app: top-course-green
+    spec:
+      containers:
+      - image: hrj06/top-course-app:v2
+        name: top-course-green
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+          requests:
+            cpu: "200m"
+            memory: "256Mi"

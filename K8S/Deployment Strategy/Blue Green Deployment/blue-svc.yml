@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: top-course-blue-deployment-svc
+  namespace: blue-green-ns
+spec:
+  selector:
+    app: top-course-green
+  type: ClusterIP
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
