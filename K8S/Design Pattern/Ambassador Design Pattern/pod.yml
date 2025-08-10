@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ambassador-pod
+spec:
+  containers:
+  - name: main-app
+    image: mysql:8
+    command: ["sh", "-c", "while true; do sleep 1000; done"]
+  - name: ambassador-app
+    image: alpine/socat
+    command:
+      - sh
+      - -c
+      - |
+        socat TCP-LISTEN:3306,fork TCP:<DB_HOST>.com:3306
+    ports:
+      - containerPort: 3306
