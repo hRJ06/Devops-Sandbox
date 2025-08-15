@@ -1,0 +1,52 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: adapter-pod
+spec:
+  volumes:
+    - name: raw-log
+      emptyDir: {}
+    - name: processed-log
+      emptyDir: {}
+  containers:
+    - name: apache-log-producer
+      image: busybox
+      command: ["sh", "-c"]
+      args:
+        - |
+          while true; do
+            echo "127.0.0.1 - - [$(date '+%d/%b/%Y:%H:%M:%S %z')] \"GET /index.html HTTP/1.1\" 200 1024" >> /var/log/apache.log;
+            echo "192.168.0.5 - - [$(date '+%d/%b/%Y:%H:%M:%S %z')] \"POST /submit HTTP/1.1\" 404 512" >> /var/log/apache.log;
+            sleep 5;
+          done
+      volumeMounts:
+        - name: raw-log
+          mountPath: /var/log
+
+    - name: apache-log-adapter
+      image: busybox
+      command: ["sh", "-c"]
+      args:
+        - |
+          while true; do
+            awk '{
+              ip=$1;
+              ts=$4" "$5;
+              gsub(/[\[\]]/, "", ts);
+              method=$6; gsub(/"/, "", method);
+              path=$7;
+              proto=$8; gsub(/"/, "", proto);
+              status=$9;
+              size=$10;
+              printf("{\"ip\":\"%s\",\"timestamp\":\"%s\",\"method\":\"%s\",\"path\":\"%s\",\"protocol\":\"%s\",\"status\":%s,\"size\":%s}\n", ip, ts, method, path, proto, status, size);
+            }' /var/log/apache.log > /processed/formatted.json;
+            echo "Apache Log";
+            cat /processed/formatted.json;
+            sleep 5;
+          done
+      volumeMounts:
+        - name: raw-log
+          mountPath: /var/log
+        - name: processed-log
+          mountPath: /processed
+
