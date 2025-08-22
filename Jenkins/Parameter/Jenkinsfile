@@ -1,0 +1,17 @@
+pipeline {
+    agent any
+    parameters {
+        booleanParam(defaultValue: false, description: "Start Deployment", name: "startDeployment")
+        string(defaultValue: "latest", description: "Which Version to Deploy?", name: "deployVersion")
+        choice(choices: ["DEV", "SIT", "UAT", "PERF", "PROD"], description: "Which Environment to Deploy?", name: "deployEnv")
+    }
+    stages {
+        stage("Test Deployment") {
+            steps {
+                echo "Env - ${params.deployEnv}"
+                echo "Version - ${params.deployVersion}"
+                echo "Start Deployment - ${params.startDeployment}"
+            }
+        }
+    }
+}
