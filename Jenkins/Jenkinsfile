@@ -1,0 +1,22 @@
+pipeline {
+    agent any
+    stages {
+        stage("User Input") {
+            steps {
+                script {
+                    def userInput = input(
+                        id: 'DeployInput', message: 'Please provide Deployment Detail', parameters: [
+                            string(name: 'deployVersion', defaultValue: '1.0.0', description: 'Which Version to Deploy?'),
+                            choice(name: 'deployEnv', choices: ['DEV', 'SIT', 'UAT', 'PERF', 'PROD'], description: 'Which Environment to Deploy'),
+                            booleanParam(name: 'startDeployment', defaultValue: true, description: 'Start Deployment')
+                        ]
+                    )
+                    echo "Env - ${params.deployEnv}"
+                    echo "Version - ${params.deployVersion}"
+                    echo "Start Deployment - ${params.startDeployment}"
+                }
+            }
+        }
+    }
+}
+
