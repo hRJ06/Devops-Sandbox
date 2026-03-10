@@ -27,4 +27,11 @@ variable "types" {
   }
 }
 
+variable "user" {
+  type    = list(string)
+  default = ["Alice", "Bob", "John"]
+}
+
 variable "ami" {}
+
+
