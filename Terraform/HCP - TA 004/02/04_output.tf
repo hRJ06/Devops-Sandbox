@@ -9,3 +9,7 @@ output "public-url" {
 output "data" {
   value = data.local_file.user_data
 }
+
+output "aws_iam_users" {
+  value = aws_iam_user.user[*].name
+}
