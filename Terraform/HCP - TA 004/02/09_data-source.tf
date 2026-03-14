@@ -11,3 +11,12 @@ data "aws_ami" "ami_image" {
     values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
   }
 }
+
+data "aws_ec2_instance_type" "instance_type_prop" {
+  instance_type = var.instance_type
+}
+
+
+data "http" "url" {
+  url = "https://google.com"
+}

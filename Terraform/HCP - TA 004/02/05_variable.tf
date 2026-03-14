@@ -82,3 +82,8 @@ variable "password" {
     error_message = "Length of password must be atleast 12 characters."
   }
 }
+
+
+variable "instance_type" {
+  type = string
+}
