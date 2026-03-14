@@ -17,3 +17,11 @@ output "aws_iam_users" {
 output "zipmap" {
   value = zipmap(aws_iam_user.user[*].name, aws_iam_user.user[*].arn)
 }
+
+output "my_set" {
+  value = var.my_set
+}
+
+output "my_object" {
+  value = var.my_object
+}
