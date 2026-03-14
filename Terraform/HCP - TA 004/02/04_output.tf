@@ -13,3 +13,7 @@ output "data" {
 output "aws_iam_users" {
   value = aws_iam_user.user[*].name
 }
+
+output "zipmap" {
+  value = zipmap(aws_iam_user.user[*].name, aws_iam_user.user[*].arn)
+}
